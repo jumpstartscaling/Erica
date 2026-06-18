@@ -11,7 +11,7 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="/static/js/tracker.js"></script>
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body class="bg-slate-50 text-slate-800" x-data="headerState()" x-init="init()">
   <!-- Header -->
   <header class="border-b border-slate-200 bg-white">
     <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
@@ -24,9 +24,19 @@
         <a href="#learn" class="hover:text-emerald-600">What You'll Learn</a>
         <a href="/faq" class="hover:text-emerald-600">FAQ</a>
       </nav>
-      <div class="flex items-center gap-2 text-sm">
-        <a href="/login/customer" data-track="nav_customer_login" class="rounded-lg px-3 py-2 font-medium text-slate-700 hover:bg-slate-100">Customer Login</a>
-        <a href="/login/agent" data-track="nav_agent_login" class="rounded-lg bg-slate-900 px-3 py-2 font-medium text-white hover:bg-slate-700">Agent Login</a>
+      <div class="flex items-center gap-2 text-sm" x-cloak>
+        <template x-if="!authenticated">
+          <div class="flex items-center gap-2">
+            <a href="/login/customer" data-track="nav_customer_login" class="rounded-lg px-3 py-2 font-medium text-slate-700 hover:bg-slate-100">Customer Login</a>
+            <a href="/login/agent" data-track="nav_agent_login" class="rounded-lg bg-slate-900 px-3 py-2 font-medium text-white hover:bg-slate-700">Agent Login</a>
+          </div>
+        </template>
+        <template x-if="authenticated">
+          <div class="flex items-center gap-2">
+            <a :href="dashboardUrl" class="rounded-lg bg-emerald-500 px-3 py-2 font-medium text-white hover:bg-emerald-600" x-text="'Dashboard (' + role + ')'"></a>
+            <button @click="logout" class="rounded-lg px-3 py-2 font-medium text-slate-600 hover:bg-slate-100">Logout</button>
+          </div>
+        </template>
       </div>
     </div>
   </header>
@@ -112,6 +122,26 @@
   <script>
     document.getElementById("yr").textContent = new Date().getFullYear();
     document.addEventListener("DOMContentLoaded", function () { if (window.lucide) lucide.createIcons(); });
+    function headerState() {
+      return {
+        authenticated: false, role: '', dashboardUrl: '/login/customer',
+        async init() {
+          try {
+            const res = await fetch("/api/me");
+            if (res.status === 401) return;
+            const d = await res.json();
+            if (d.authenticated && d.user) {
+              this.authenticated = true;
+              this.role = d.user.role;
+              if (d.user.role === 'admin') this.dashboardUrl = '/admin';
+              else if (d.user.role === 'agent') this.dashboardUrl = '/agent/dashboard';
+              else this.dashboardUrl = '/customer/dashboard';
+            }
+          } catch(e) {}
+        },
+        async logout() { await fetch("/api/logout", { method: "POST" }); window.location.href = "/"; },
+      };
+    }
   </script>
 </body>
 </html>

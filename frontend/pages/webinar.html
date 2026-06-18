@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scheduled Training — Tranzformation Nation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/app.css" />
+  <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <script src="/static/js/credit_tips.js"></script>
+  <script src="/static/js/webinar.js"></script>
+  <script src="/static/js/tracker.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100"
+      x-data="webinarRoom(location.pathname.indexOf('/agent') !== -1 ? 'agent' : 'customer')"
+      x-init="init()">
+
+  <!-- Minimal funnel header (distraction-free) -->
+  <header class="border-b border-white/10">
+    <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+      <div class="flex items-center gap-2 font-bold">
+        <span class="grid h-7 w-7 place-items-center rounded-lg bg-emerald-500 text-white">TN</span>
+        <span class="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-amber-300">
+          <span class="h-2 w-2 rounded-full bg-amber-400"></span> Scheduled Premiere · Pre-Recorded
+        </span>
+      </div>
+      <a :href="audience === 'agent' ? '/agent/dashboard' : '/customer/dashboard'" class="text-sm text-slate-300 hover:text-white">Dashboard</a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-4 py-6">
+    <h1 class="text-xl font-bold" x-text="title || 'Loading…'"></h1>
+
+    <p x-show="error" x-cloak class="mt-4 rounded-lg bg-rose-900/40 p-3 text-rose-200" x-text="error"></p>
+
+    <!-- Video / state area -->
+    <div class="relative mt-4 aspect-video w-full overflow-hidden rounded-2xl bg-black">
+      <!-- Waiting / countdown -->
+      <div x-show="state === 'waiting'" x-cloak class="absolute inset-0 grid place-items-center text-center">
+        <div>
+          <p class="text-sm uppercase tracking-widest text-slate-400">Your presentation begins in</p>
+          <p class="mt-2 text-6xl font-extrabold tabular-nums" x-text="fmt(countdown)"></p>
+          <p class="mt-3 text-slate-400">This is a previously recorded presentation delivered as a scheduled training session.</p>
+        </div>
+      </div>
+
+      <!-- Ready: click-to-join (satisfies autoplay gesture) -->
+      <div x-show="state === 'ready'" x-cloak class="absolute inset-0 grid place-items-center">
+        <button @click="join" data-track="click_to_join" class="rounded-2xl bg-emerald-500 px-8 py-5 text-lg font-bold text-white shadow-lg hover:bg-emerald-600">
+          🔴 Click to join the session
+        </button>
+      </div>
+
+      <!-- Live: YouTube player mounts here -->
+      <div x-show="state === 'live'" x-cloak class="absolute inset-0">
+        <div id="yt-player" class="h-full w-full"></div>
+      </div>
+
+      <!-- Ended -->
+      <div x-show="state === 'ended'" x-cloak class="absolute inset-0 grid place-items-center text-center">
+        <div>
+          <p class="text-2xl font-bold">This session has ended</p>
+          <p class="mt-2 text-slate-400">A new scheduled screening starts soon. You can also review the lessons on demand.</p>
+          <a href="/course" class="mt-4 inline-block rounded-lg bg-emerald-500 px-5 py-2.5 font-semibold text-white hover:bg-emerald-600">Open Course Lessons</a>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div x-show="loading" class="absolute inset-0 grid place-items-center text-slate-400">Loading session…</div>
+    </div>
+
+    <!-- Progress -->
+    <div x-show="state === 'live'" x-cloak class="mt-3">
+      <div class="flex justify-between text-xs text-slate-400">
+        <span>Presentation progress</span>
+        <span x-text="fmt(elapsed) + ' / ' + fmt(durationSeconds)"></span>
+      </div>
+      <div class="mt-1 h-2 w-full rounded-full bg-white/10"><div class="h-2 rounded-full bg-emerald-500" :style="'width:' + progressPct + '%'"></div></div>
+    </div>
+
+    <!-- Credit tips ticker -->
+    <div class="relative mt-5 overflow-hidden rounded-xl border border-emerald-400/30 bg-slate-900 shadow-lg">
+      <div class="relative flex items-center gap-3 px-4 py-3">
+        <div class="shrink-0 rounded-full bg-emerald-400 px-3 py-1 text-xs font-bold uppercase tracking-wide text-slate-950">Credit Tip</div>
+        <p :key="tipKey" class="animate-tip-in text-sm font-medium md:text-base" aria-live="polite" x-text="tip"></p>
+      </div>
+      <div class="h-1 w-full bg-slate-800"><div :key="'bar-' + tipKey" class="h-1 animate-tip-progress bg-emerald-400"></div></div>
+    </div>
+
+    <!-- Action panel + timed offers -->
+    <div class="mt-6 grid gap-4 md:grid-cols-3">
+      <div class="rounded-2xl border border-white/10 bg-slate-900 p-5 md:col-span-2">
+        <h2 class="font-semibold">Your Action Panel</h2>
+        <div class="mt-3 space-y-3 text-sm">
+          <button data-track="submit_question" class="w-full rounded-lg border border-white/10 px-4 py-2 text-left hover:bg-white/5">Submit a Question <span class="text-slate-400">— always available</span></button>
+
+          <!-- $35 course offer reveals at courseRevealSeconds -->
+          <button x-show="showCourseOffer" x-cloak @click="offerCourse" data-track="course_offer_click"
+                  class="w-full rounded-lg bg-emerald-500 px-4 py-3 text-left font-semibold text-white hover:bg-emerald-600">
+            Get the $<span x-text="prices.course"></span> Credit Action Course
+          </button>
+          <p x-show="!showCourseOffer" x-cloak class="rounded-lg border border-dashed border-white/10 px-4 py-2 text-slate-500">
+            Course resource unlocks at <span x-text="fmt(courseRevealSeconds)"></span>
+          </p>
+
+          <!-- coaching offer reveals at offerRevealSeconds -->
+          <button x-show="showCoachingOffer" x-cloak @click="offerCoaching" data-track="coaching_offer_click"
+                  class="w-full rounded-lg bg-amber-400 px-4 py-3 text-left font-semibold text-slate-950 hover:bg-amber-300">
+            View Coaching Options
+          </button>
+          <p x-show="!showCoachingOffer" x-cloak class="rounded-lg border border-dashed border-white/10 px-4 py-2 text-slate-500">
+            Coaching options unlock at <span x-text="fmt(offerRevealSeconds)"></span>
+          </p>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-white/10 bg-slate-900 p-5">
+        <h2 class="font-semibold">Host Notes</h2>
+        <p class="mt-2 text-sm text-slate-300">"Coming up next: how to separate a possible reporting error from accurate negative information."</p>
+        <div class="mt-4 rounded-lg bg-amber-900/30 p-3 text-xs text-amber-200">
+          Educational notice: Results vary. Accurate and timely negative information generally cannot be removed from a credit report.
+        </div>
+      </div>
+    </div>
+
+    <p class="mt-6 text-xs text-slate-500">Pre-recorded training presented on a scheduled basis. Educational purposes only — not legal, financial, tax, or credit-repair advice. No outcomes are guaranteed.</p>
+  </main>
+</body>
+</html>

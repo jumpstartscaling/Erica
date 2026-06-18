@@ -1,0 +1,29 @@
+/* Tranzformation Nation -- small custom CSS on top of Tailwind (CDN). */
+
+:root {
+  --tn-ink: #0f172a;
+}
+
+html { scroll-behavior: smooth; }
+
+body { -webkit-font-smoothing: antialiased; }
+
+/* Credit tip ticker animations (webinar page). */
+@keyframes tip-in {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes tip-progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+.animate-tip-in { animation: tip-in 350ms ease-out; }
+.animate-tip-progress { animation: tip-progress 5s linear forwards; }
+
+/* Hide content until Alpine initializes to avoid a flash of raw markup. */
+[x-cloak] { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-tip-in, .animate-tip-progress { animation: none; }
+  html { scroll-behavior: auto; }
+}

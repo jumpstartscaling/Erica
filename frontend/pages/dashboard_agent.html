@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Dashboard — Tranzformation Nation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/app.css" />
+  <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <script src="/static/js/tracker.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800" x-data="dash()" x-init="init()">
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+      <a href="/agent/dashboard" class="flex items-center gap-2 font-bold text-slate-900"><span class="grid h-8 w-8 place-items-center rounded-lg bg-slate-900 text-white">TN</span> Agent Dashboard</a>
+      <button @click="logout" data-track="logout" class="text-sm font-medium text-slate-600 hover:text-rose-600">Logout</button>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-4 py-10">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <h1 class="text-2xl font-bold">Welcome, <span x-text="user.first_name || 'there'"></span></h1>
+      <span class="rounded-full px-3 py-1 text-xs font-semibold"
+            :class="user.approval_status === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'">
+        Agent approval: <span x-text="user.approval_status || 'pending'"></span>
+      </span>
+    </div>
+
+    <div class="mt-8 grid gap-6 md:grid-cols-3">
+      <section class="rounded-2xl border border-slate-200 bg-white p-5 md:col-span-2">
+        <h2 class="font-semibold text-slate-900">Training Progress</h2>
+        <div class="mt-3 flex gap-2">
+          <a href="/webinar/agent" data-track="resume_webinar" class="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-600">Resume Business Training</a>
+          <a href="/course?audience=agent" data-track="open_course" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold hover:bg-slate-50">Course Lessons</a>
+        </div>
+        <h2 class="mt-6 font-semibold text-slate-900">Business Resources</h2>
+        <ul class="mt-3 grid gap-2 sm:grid-cols-2 text-sm">
+          <li class="rounded-lg border border-slate-200 p-3" :class="locked()">Client Journey Template</li>
+          <li class="rounded-lg border border-slate-200 p-3" :class="locked()">Compliance Preparation Checklist</li>
+          <li class="rounded-lg border border-slate-200 p-3" :class="locked()">Consultation Script</li>
+          <li class="rounded-lg border border-slate-200 p-3" :class="locked()">Email Follow-Up Templates</li>
+        </ul>
+        <p x-show="user.approval_status !== 'approved'" x-cloak class="mt-3 text-xs text-amber-600">Advanced partner resources unlock after an administrator approves your account.</p>
+      </section>
+
+      <section class="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 class="font-semibold text-slate-900">Coaching</h2>
+        <p class="mt-2 text-sm text-slate-600">Business coaching to structure your offer and workflow.</p>
+        <a href="/coaching?track=agent" data-track="view_coaching" class="mt-3 inline-block rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Book Business Coaching</a>
+      </section>
+    </div>
+    <p class="mt-8 text-xs text-slate-400">Educational and strategy support only. We do not guarantee business revenue or specific credit outcomes.</p>
+  </main>
+
+  <script>
+    function dash() {
+      return {
+        user: {},
+        locked() { return this.user.approval_status === 'approved' ? '' : 'opacity-50'; },
+        async init() {
+          const res = await fetch("/api/me");
+          if (res.status === 401) { window.location.href = "/login/agent"; return; }
+          const d = await res.json(); this.user = d.user || {};
+        },
+        async logout() { await fetch("/api/logout", { method: "POST" }); window.location.href = "/"; },
+      };
+    }
+  </script>
+</body>
+</html>

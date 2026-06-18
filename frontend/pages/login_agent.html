@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Login — Tranzformation Nation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/app.css" />
+  <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <script src="/static/js/tracker.js"></script>
+</head>
+<body class="grid min-h-screen place-items-center bg-slate-100 px-4 text-slate-800">
+  <main class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm" x-data="loginForm()">
+    <a href="/" class="mb-6 flex items-center justify-center gap-2 font-bold text-slate-900"><span class="grid h-8 w-8 place-items-center rounded-lg bg-slate-900 text-white">TN</span> Tranzformation Nation</a>
+    <h1 class="text-center text-2xl font-bold">Agent Login</h1>
+
+    <div x-show="message" x-cloak class="mt-4 rounded-lg border p-3 text-sm" :class="ok ? 'border-emerald-300 bg-emerald-50 text-emerald-700' : 'border-rose-300 bg-rose-50 text-rose-700'">
+      <span x-text="message"></span>
+      <a x-show="wrongPortalUrl" x-cloak :href="wrongPortalUrl" class="font-semibold underline">Continue</a>
+    </div>
+
+    <form class="mt-6 space-y-4" @submit.prevent="submit">
+      <div>
+        <label class="text-sm font-medium">Email</label>
+        <input type="email" x-model="email" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-emerald-500 focus:outline-none" />
+      </div>
+      <div>
+        <label class="text-sm font-medium">Password</label>
+        <input type="password" x-model="password" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-emerald-500 focus:outline-none" />
+      </div>
+      <button type="submit" data-track="agent_login_submit" :disabled="loading" class="w-full rounded-lg bg-slate-900 px-4 py-2.5 font-semibold text-white hover:bg-slate-700 disabled:opacity-50" x-text="loading ? 'Signing in…' : 'Agent Login'"></button>
+    </form>
+
+    <div class="mt-4 text-center text-sm text-slate-500"><a href="/disclosures#privacy" class="hover:text-emerald-600">Forgot your password?</a></div>
+    <p class="mt-4 text-center text-sm">Not registered as an agent? <a href="/register/agent" class="font-semibold text-emerald-600 hover:underline">Create an agent account</a></p>
+  </main>
+
+  <script>
+    function loginForm() {
+      return {
+        email: "", password: "", loading: false, message: "", ok: false, wrongPortalUrl: "",
+        async submit() {
+          this.loading = true; this.message = ""; this.wrongPortalUrl = "";
+          try {
+            const res = await fetch("/api/login", {
+              method: "POST", headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: this.email, password: this.password, expected_role: "agent", visitor_id: window.TN && window.TN.visitorId }),
+            });
+            const d = await res.json();
+            if (d.ok) { this.ok = true; this.message = "Signed in. Redirecting…"; window.location.href = d.redirect; return; }
+            this.ok = false; this.message = d.error || "Login failed.";
+            if (d.wrong_portal && d.redirect) this.wrongPortalUrl = d.redirect;
+          } catch (e) { this.ok = false; this.message = "Network error. Please try again."; }
+          finally { this.loading = false; }
+        },
+      };
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create Your Agent Account — Tranzformation Nation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/app.css" />
+  <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <script src="/static/js/tracker.js"></script>
+</head>
+<body class="grid min-h-screen place-items-center bg-slate-100 px-4 py-10 text-slate-800">
+  <main class="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-8 shadow-sm" x-data="registerForm()">
+    <a href="/" class="mb-6 flex items-center justify-center gap-2 font-bold text-slate-900"><span class="grid h-8 w-8 place-items-center rounded-lg bg-slate-900 text-white">TN</span> Tranzformation Nation</a>
+    <h1 class="text-2xl font-bold">Create Your Agent Account</h1>
+    <p class="mt-2 text-sm text-slate-600">Learn how to build a responsible credit education and service business.</p>
+
+    <div x-show="message" x-cloak class="mt-4 rounded-lg border p-3 text-sm" :class="ok ? 'border-emerald-300 bg-emerald-50 text-emerald-700' : 'border-rose-300 bg-rose-50 text-rose-700'" x-text="message"></div>
+
+    <form class="mt-6 space-y-4" @submit.prevent="submit">
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div><label class="text-sm font-medium">First name</label><input x-model="first_name" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-emerald-500 focus:outline-none" /></div>
+        <div><label class="text-sm font-medium">Last name</label><input x-model="last_name" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-emerald-500 focus:outline-none" /></div>
+      </div>
+      <div><label class="text-sm font-medium">Email address</label><input type="email" x-model="email" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-emerald-500 focus:outline-none" /></div>
+      <div><label class="text-sm font-medium">Password</label><input type="password" x-model="password" required minlength="8" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-emerald-500 focus:outline-none" /></div>
+      <div><label class="text-sm font-medium">Business name <span class="text-slate-400">— optional</span></label><input x-model="business_name" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-emerald-500 focus:outline-none" /></div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div><label class="text-sm font-medium">Current experience level</label>
+          <select x-model="experience_level" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-emerald-500 focus:outline-none">
+            <option value="">Select…</option><option>New to this</option><option>Some experience</option><option>Experienced</option>
+          </select>
+        </div>
+        <div><label class="text-sm font-medium">Primary goal</label>
+          <select x-model="primary_goal" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-emerald-500 focus:outline-none">
+            <option value="">Select…</option><option>Start a business</option><option>Add a service line</option><option>Learn the basics</option>
+          </select>
+        </div>
+      </div>
+      <label class="flex items-start gap-2 text-sm"><input type="checkbox" x-model="agree" required class="mt-1" /> I agree to the <a href="/disclosures#terms" class="text-emerald-600 underline">Terms</a> and <a href="/disclosures#privacy" class="text-emerald-600 underline">Privacy Policy</a></label>
+      <label class="flex items-start gap-2 text-sm"><input type="checkbox" x-model="marketing_opt_in" class="mt-1" /> I agree to receive business education emails</label>
+      <button type="submit" data-track="agent_register_submit" :disabled="loading" class="w-full rounded-lg bg-slate-900 px-4 py-2.5 font-semibold text-white hover:bg-slate-700 disabled:opacity-50" x-text="loading ? 'Creating…' : 'Create Agent Account'"></button>
+    </form>
+    <p class="mt-3 text-xs text-slate-400">New agent accounts begin with status: pending. Advanced partner resources unlock after admin approval.</p>
+    <p class="mt-4 text-center text-sm">Already registered? <a href="/login/agent" class="font-semibold text-emerald-600 hover:underline">Agent Login</a></p>
+  </main>
+
+  <script>
+    function registerForm() {
+      return {
+        first_name: "", last_name: "", email: "", password: "", business_name: "", experience_level: "", primary_goal: "",
+        agree: false, marketing_opt_in: false, loading: false, message: "", ok: false,
+        async submit() {
+          this.message = "";
+          if (this.password.length < 8) { this.ok = false; this.message = "Password must be at least 8 characters."; return; }
+          this.loading = true;
+          try {
+            const res = await fetch("/api/register/agent", {
+              method: "POST", headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ first_name: this.first_name, last_name: this.last_name, email: this.email, password: this.password, business_name: this.business_name, experience_level: this.experience_level, primary_goal: this.primary_goal, marketing_opt_in: this.marketing_opt_in, visitor_id: window.TN && window.TN.visitorId }),
+            });
+            const d = await res.json();
+            if (d.ok) { this.ok = true; this.message = "Account created. Check your email to verify."; window.location.href = d.redirect + (d.verify_token ? ("?token=" + d.verify_token) : ""); return; }
+            this.ok = false; this.message = d.error || "Registration failed.";
+          } catch (e) { this.ok = false; this.message = "Network error. Please try again."; }
+          finally { this.loading = false; }
+        },
+      };
+    }
+  </script>
+</body>
+</html>

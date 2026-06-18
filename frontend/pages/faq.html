@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FAQ — Tranzformation Nation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/app.css" />
+  <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <script src="/static/js/tracker.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
+      <a href="/" class="flex items-center gap-2 font-bold text-slate-900"><span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500 text-white">TN</span> Tranzformation Nation</a>
+      <a href="/" class="text-sm text-slate-600 hover:text-emerald-600">Home</a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-3xl px-4 py-12" x-data="faqData()">
+    <h1 class="text-3xl font-extrabold text-slate-900">Frequently Asked Questions</h1>
+    <div class="mt-8 space-y-3">
+      <template x-for="(item, i) in items" :key="i">
+        <div class="rounded-xl border border-slate-200 bg-white">
+          <button @click="open = (open === i ? -1 : i)" class="flex w-full items-center justify-between px-5 py-4 text-left font-semibold">
+            <span x-text="item.q"></span>
+            <span x-text="open === i ? '−' : '+'"></span>
+          </button>
+          <p x-show="open === i" x-cloak class="px-5 pb-4 text-slate-600" x-text="item.a"></p>
+        </div>
+      </template>
+    </div>
+    <p class="mt-10 text-xs text-slate-400">Educational purposes only. Not legal or financial advice. You can dispute inaccurate information on your credit reports yourself for free.</p>
+  </main>
+
+  <script>
+    function faqData() {
+      return {
+        open: 0,
+        items: [
+          { q: "Is the training live?", a: "No. It is a pre-recorded training presented on a scheduled basis. We never represent the recording as genuinely live." },
+          { q: "Do I need a credit card to watch?", a: "No. The training is free. No credit card is required to create an account and watch." },
+          { q: "Can you guarantee my score will increase?", a: "No. We provide education only. Results vary and are not guaranteed. Accurate, current negative information generally cannot be legally removed." },
+          { q: "Can I dispute errors myself?", a: "Yes. You can dispute inaccurate, incomplete, or unverifiable information on your own reports for free. AnnualCreditReport.com is the official source for free reports." },
+          { q: "What is the difference between the customer and agent tracks?", a: "The customer track helps you understand your own credit. The agent track covers the foundations of operating a compliant credit education business." },
+          { q: "How does coaching work?", a: "Coaching sessions are educational only. Payment and booking are being finalized pending legal review; you can request a preferred time and our team will follow up by email." },
+        ],
+      };
+    }
+  </script>
+</body>
+</html>

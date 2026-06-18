@@ -1,0 +1,25 @@
+# Secrets / env
+backend/.env
+.env
+
+# SQLite database files
+backend/app.db
+backend/app.db-wal
+backend/app.db-shm
+*.sqlite
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

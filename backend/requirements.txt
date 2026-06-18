@@ -1,0 +1,15 @@
+# Tranzformation Nation -- backend dependencies (pinned).
+# Install:  python -m venv .venv && source .venv/bin/activate
+#           pip install -r backend/requirements.txt
+
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+pydantic==2.13.4
+email-validator==2.2.0
+bcrypt==4.3.0
+itsdangerous==2.2.0
+python-multipart==0.0.20
+
+# Optional: Postgres driver. Only needed if DATABASE_URL starts with "postgres".
+# Uncomment to enable the Postgres swap (see docs/ENV_SETUP.md).
+# psycopg[binary]==3.2.9

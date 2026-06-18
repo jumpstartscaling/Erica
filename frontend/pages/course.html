@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Course Lessons — Tranzformation Nation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/app.css" />
+  <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <script src="/static/js/tracker.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800" x-data="course()" x-init="init()">
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+      <a href="/" class="flex items-center gap-2 font-bold text-slate-900"><span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500 text-white">TN</span> Course Lessons</a>
+      <a :href="backHref" class="text-sm text-slate-600 hover:text-emerald-600">Back to dashboard</a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-4xl px-4 py-10">
+    <h1 class="text-2xl font-bold">Credit Action Course</h1>
+    <p class="mt-1 text-slate-600">Modules and lessons are read from the database (<code>modules</code> + <code>lessons</code>).</p>
+
+    <div class="mt-8 grid gap-6 lg:grid-cols-3">
+      <!-- Module nav -->
+      <aside class="space-y-2">
+        <template x-for="m in modules" :key="m.id">
+          <button @click="select(m)" :class="active && active.id === m.id ? 'bg-emerald-500 text-white' : 'bg-white text-slate-700'" class="block w-full rounded-lg border border-slate-200 px-4 py-3 text-left text-sm font-medium">
+            <span x-text="m.sort_order + '. ' + m.title"></span>
+          </button>
+        </template>
+        <p x-show="!modules.length" x-cloak class="text-sm text-slate-500">Loading…</p>
+      </aside>
+
+      <!-- Lessons -->
+      <section class="lg:col-span-2">
+        <template x-if="active">
+          <div>
+            <h2 class="text-xl font-bold" x-text="active.title"></h2>
+            <p class="mt-1 text-slate-600" x-text="active.summary"></p>
+            <div class="mt-5 space-y-4">
+              <template x-for="l in active.lessons" :key="l.id">
+                <article class="rounded-xl border border-slate-200 bg-white p-5">
+                  <div class="flex items-center justify-between">
+                    <h3 class="font-semibold" x-text="l.title"></h3>
+                    <span class="text-xs text-slate-400" x-text="l.duration_minutes + ' min'"></span>
+                  </div>
+                  <p class="mt-2 text-sm text-slate-600" x-text="l.body"></p>
+                </article>
+              </template>
+            </div>
+          </div>
+        </template>
+      </section>
+    </div>
+    <p class="mt-10 text-xs text-slate-400">Educational purposes only. Not legal or financial advice. Accurate, current negative information generally cannot be legally removed.</p>
+  </main>
+
+  <script>
+    function course() {
+      return {
+        modules: [], active: null, backHref: "/customer/dashboard",
+        async init() {
+          const audience = new URLSearchParams(location.search).get("audience") === "agent" ? "agent" : "customer";
+          this.backHref = audience === "agent" ? "/agent/dashboard" : "/customer/dashboard";
+          const res = await fetch("/api/lessons?audience=" + audience);
+          if (res.status === 401) { window.location.href = "/login/customer"; return; }
+          const d = await res.json();
+          this.modules = d.modules || [];
+          if (this.modules.length) this.active = this.modules[0];
+        },
+        select(m) { this.active = m; if (window.TN) window.TN.track("lesson_module_open", { module: m.title }); },
+      };
+    }
+  </script>
+</body>
+</html>

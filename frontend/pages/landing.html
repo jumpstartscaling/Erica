@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tranzformation Nation — Free Credit Education Training</title>
+  <meta name="description" content="A free, pre-recorded credit education training for consumers and aspiring credit professionals. Educational only — no guarantees." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/app.css" />
+  <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="/static/js/tracker.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <!-- Header -->
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+      <a href="/" class="flex items-center gap-2 font-bold text-slate-900">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500 text-white">TN</span>
+        Tranzformation Nation
+      </a>
+      <nav class="hidden items-center gap-6 text-sm md:flex">
+        <a href="#how" class="hover:text-emerald-600">How It Works</a>
+        <a href="#learn" class="hover:text-emerald-600">What You'll Learn</a>
+        <a href="/faq" class="hover:text-emerald-600">FAQ</a>
+      </nav>
+      <div class="flex items-center gap-2 text-sm">
+        <a href="/login/customer" data-track="nav_customer_login" class="rounded-lg px-3 py-2 font-medium text-slate-700 hover:bg-slate-100">Customer Login</a>
+        <a href="/login/agent" data-track="nav_agent_login" class="rounded-lg bg-slate-900 px-3 py-2 font-medium text-white hover:bg-slate-700">Agent Login</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-white to-slate-50">
+    <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-2">
+      <div>
+        <p class="mb-3 inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">Free Credit Education Training</p>
+        <h1 class="text-4xl font-extrabold leading-tight text-slate-900 md:text-5xl">Understand Your Credit and Build a Clear Plan for What to Do Next</h1>
+        <p class="mt-4 text-lg text-slate-600">Watch a practical, step-by-step <strong>pre-recorded training</strong> designed for consumers and aspiring credit professionals.</p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="/customer" data-track="cta_click" data-cta="customer_track" class="rounded-xl bg-emerald-500 px-6 py-3 text-center font-semibold text-white shadow-sm hover:bg-emerald-600">I want to improve my own credit</a>
+          <a href="/agent" data-track="cta_click" data-cta="agent_track" class="rounded-xl border border-slate-300 bg-white px-6 py-3 text-center font-semibold text-slate-800 hover:bg-slate-100">I want to build a credit business</a>
+        </div>
+        <p class="mt-4 text-sm text-slate-500">No credit card is required to watch the training.</p>
+      </div>
+      <div>
+        <img src="https://picsum.photos/seed/tranzformation/640/420" alt="Person reviewing documents" class="w-full rounded-2xl shadow-lg" />
+      </div>
+    </div>
+  </section>
+
+  <!-- What this covers -->
+  <section id="learn" class="mx-auto max-w-6xl px-4 py-14">
+    <h2 class="text-center text-2xl font-bold text-slate-900">What This Training Covers</h2>
+    <div class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div class="rounded-xl border border-slate-200 bg-white p-5"><i data-lucide="file-text" class="mb-2 text-emerald-500"></i><p>How credit reports and credit scores differ</p></div>
+      <div class="rounded-xl border border-slate-200 bg-white p-5"><i data-lucide="search" class="mb-2 text-emerald-500"></i><p>How to identify possible reporting errors</p></div>
+      <div class="rounded-xl border border-slate-200 bg-white p-5"><i data-lucide="scale" class="mb-2 text-emerald-500"></i><p>What you can and cannot dispute</p></div>
+      <div class="rounded-xl border border-slate-200 bg-white p-5"><i data-lucide="percent" class="mb-2 text-emerald-500"></i><p>How utilization and payment history work</p></div>
+      <div class="rounded-xl border border-slate-200 bg-white p-5"><i data-lucide="list-checks" class="mb-2 text-emerald-500"></i><p>How to create an organized action plan</p></div>
+      <div class="rounded-xl border border-slate-200 bg-white p-5"><i data-lucide="shield" class="mb-2 text-emerald-500"></i><p>How to protect against identity theft</p></div>
+    </div>
+  </section>
+
+  <!-- Two tracks -->
+  <section class="bg-white py-14">
+    <div class="mx-auto max-w-6xl px-4">
+      <h2 class="text-center text-2xl font-bold text-slate-900">Choose Your Training</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        <div class="rounded-2xl border border-slate-200 p-6">
+          <h3 class="text-xl font-bold text-slate-900">Customer Track</h3>
+          <p class="mt-2 text-slate-600">Learn how to review your credit, organize your documents, and develop a responsible improvement plan.</p>
+          <a href="/customer" data-track="cta_click" data-cta="customer_training" class="mt-5 inline-block rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-white hover:bg-emerald-600">Watch Customer Training</a>
+        </div>
+        <div class="rounded-2xl border border-slate-200 p-6">
+          <h3 class="text-xl font-bold text-slate-900">Agent Track</h3>
+          <p class="mt-2 text-slate-600">Learn the foundation of operating a compliant credit education and service business.</p>
+          <a href="/agent" data-track="cta_click" data-cta="agent_training" class="mt-5 inline-block rounded-xl bg-slate-900 px-5 py-3 font-semibold text-white hover:bg-slate-700">Watch Business Training</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section id="how" class="mx-auto max-w-6xl px-4 py-14">
+    <h2 class="text-center text-2xl font-bold text-slate-900">How It Works</h2>
+    <ol class="mx-auto mt-8 grid max-w-3xl gap-4">
+      <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-sm font-bold text-white">1</span> Create your free account</li>
+      <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-sm font-bold text-white">2</span> Confirm your email</li>
+      <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-sm font-bold text-white">3</span> Enter the scheduled presentation</li>
+      <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-sm font-bold text-white">4</span> Receive your action resources</li>
+      <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-sm font-bold text-white">5</span> Book additional coaching when appropriate</li>
+    </ol>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="mx-auto max-w-6xl px-4 py-10 text-sm text-slate-500">
+      <div class="flex flex-wrap gap-4">
+        <a href="/faq" class="hover:text-emerald-600">FAQ</a>
+        <a href="/disclosures" class="hover:text-emerald-600">Disclosures</a>
+        <a href="/disclosures#privacy" class="hover:text-emerald-600">Privacy</a>
+        <a href="/disclosures#terms" class="hover:text-emerald-600">Terms</a>
+        <a href="/a2p" class="hover:text-emerald-600">Text Messaging</a>
+      </div>
+      <p class="mt-6 max-w-3xl">Educational purposes only. Not legal, financial, tax, or credit-repair advice. You can dispute inaccurate information on your credit reports yourself for free. We do not guarantee credit score increases, deletions, approvals, funding, or business revenue. Accurate and current negative information generally cannot be legally removed. Results vary.</p>
+      <p class="mt-4">© <span id="yr"></span> Tranzformation Nation.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("yr").textContent = new Date().getFullYear();
+    document.addEventListener("DOMContentLoaded", function () { if (window.lucide) lucide.createIcons(); });
+  </script>
+</body>
+</html>

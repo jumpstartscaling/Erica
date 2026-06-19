@@ -1,77 +1,199 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Course Lessons — Tranzformation Nation</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Lessons</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="/static/css/app.css" />
   <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="/static/js/tracker.js"></script>
-</head>
-<body class="bg-slate-50 text-slate-800" x-data="course()" x-init="init()">
-  <header class="border-b border-slate-200 bg-white">
-    <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-      <a href="/" class="flex items-center gap-2 font-bold text-slate-900"><span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500 text-white">TN</span> Course Lessons</a>
-      <a :href="backHref" class="text-sm text-slate-600 hover:text-emerald-600">Back to dashboard</a>
-    </div>
-  </header>
-
-  <main class="mx-auto max-w-4xl px-4 py-10">
-    <h1 class="text-2xl font-bold">Credit Action Course</h1>
-    <p class="mt-1 text-slate-600">Modules and lessons are read from the database (<code>modules</code> + <code>lessons</code>).</p>
-
-    <div class="mt-8 grid gap-6 lg:grid-cols-3">
-      <!-- Module nav -->
-      <aside class="space-y-2">
-        <template x-for="m in modules" :key="m.id">
-          <button @click="select(m)" :class="active && active.id === m.id ? 'bg-emerald-500 text-white' : 'bg-white text-slate-700'" class="block w-full rounded-lg border border-slate-200 px-4 py-3 text-left text-sm font-medium">
-            <span x-text="m.sort_order + '. ' + m.title"></span>
-          </button>
-        </template>
-        <p x-show="!modules.length" x-cloak class="text-sm text-slate-500">Loading…</p>
-      </aside>
-
-      <!-- Lessons -->
-      <section class="lg:col-span-2">
-        <template x-if="active">
-          <div>
-            <h2 class="text-xl font-bold" x-text="active.title"></h2>
-            <p class="mt-1 text-slate-600" x-text="active.summary"></p>
-            <div class="mt-5 space-y-4">
-              <template x-for="l in active.lessons" :key="l.id">
-                <article class="rounded-xl border border-slate-200 bg-white p-5">
-                  <div class="flex items-center justify-between">
-                    <h3 class="font-semibold" x-text="l.title"></h3>
-                    <span class="text-xs text-slate-400" x-text="l.duration_minutes + ' min'"></span>
-                  </div>
-                  <p class="mt-2 text-sm text-slate-600" x-text="l.body"></p>
-                </article>
-              </template>
-            </div>
-          </div>
-        </template>
-      </section>
-    </div>
-    <p class="mt-10 text-xs text-slate-400">Educational purposes only. Not legal or financial advice. Accurate, current negative information generally cannot be legally removed.</p>
-  </main>
-
+  <script src="/static/js/nav.js"></script>
   <script>
     function course() {
       return {
-        modules: [], active: null, backHref: "/customer/dashboard",
-        async init() {
-          const audience = new URLSearchParams(location.search).get("audience") === "agent" ? "agent" : "customer";
-          this.backHref = audience === "agent" ? "/agent/dashboard" : "/customer/dashboard";
-          const res = await fetch("/api/lessons?audience=" + audience);
-          if (res.status === 401) { window.location.href = "/login/customer"; return; }
-          const d = await res.json();
-          this.modules = d.modules || [];
-          if (this.modules.length) this.active = this.modules[0];
+        modules: [
+          {
+            id: 1,
+            title: 'Getting Started',
+            lessons: [
+              { id: '1a', title: 'Welcome & Introduction', duration: '5 min', completed: true },
+              { id: '1b', title: 'Platform Overview', duration: '12 min', completed: true },
+              { id: '1c', title: 'Setting Up Your Profile', duration: '8 min', completed: false },
+            ],
+          },
+          {
+            id: 2,
+            title: 'Core Concepts',
+            lessons: [
+              { id: '2a', title: 'Understanding the Framework', duration: '15 min', completed: false },
+              { id: '2b', title: 'Key Terminology', duration: '10 min', completed: false },
+              { id: '2c', title: 'First Workflow', duration: '20 min', completed: false },
+              { id: '2d', title: 'Common Patterns', duration: '18 min', completed: false },
+            ],
+          },
+          {
+            id: 3,
+            title: 'Advanced Topics',
+            lessons: [
+              { id: '3a', title: 'Deep Dive: Configuration', duration: '25 min', completed: false },
+              { id: '3b', title: 'Integration Strategies', duration: '22 min', completed: false },
+              { id: '3c', title: 'Performance Optimization', duration: '30 min', completed: false },
+            ],
+          },
+          {
+            id: 4,
+            title: 'Projects & Assessment',
+            lessons: [
+              { id: '4a', title: 'Capstone Project Overview', duration: '10 min', completed: false },
+              { id: '4b', title: 'Final Assessment', duration: '45 min', completed: false },
+            ],
+          },
+        ],
+        activeLesson: null,
+        sidebarOpen: true,
+        init() {
+          if (this.modules.length && this.modules[0].lessons.length) {
+            this.activeLesson = this.modules[0].lessons[0];
+          }
         },
-        select(m) { this.active = m; if (window.TN) window.TN.track("lesson_module_open", { module: m.title }); },
+        selectLesson(lesson) {
+          this.activeLesson = lesson;
+          if (window.innerWidth < 768) {
+            this.sidebarOpen = false;
+          }
+        },
+        progress() {
+          const all = this.modules.flatMap(m => m.lessons);
+          return Math.round((all.filter(l => l.completed).length / all.length) * 100) || 0;
+        },
       };
     }
+  </script>
+  <style>
+    .gradient-hero {
+      background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 40%, #7c3aed 100%);
+    }
+    .sidebar-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .lesson-card {
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      transition: box-shadow 0.2s ease;
+    }
+    .lesson-card:hover {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    .module-active {
+      border-left: 3px solid #6366f1;
+    }
+    [x-cloak] { display: none !important; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800" x-data="course()" x-init="init()">
+  <div id="tn-nav-root"></div>
+
+  <section class="gradient-hero relative overflow-hidden">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
+    <div class="relative mx-auto max-w-6xl px-6 py-16 text-center">
+      <span class="inline-block rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/80 backdrop-blur-sm">Learning Management System</span>
+      <h1 class="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl">Course Lessons</h1>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-indigo-200">Work through each module at your own pace. Track your progress and pick up where you left off.</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-10">
+    <div class="mb-6 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button @click="sidebarOpen = !sidebarOpen" class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 md:hidden">
+          <i data-lucide="menu" class="h-4 w-4"></i>
+          <span x-text="sidebarOpen ? 'Hide Menu' : 'Show Menu'"></span>
+        </button>
+        <h2 class="text-xl font-bold text-slate-800" x-text="activeLesson ? activeLesson.title : 'Select a Lesson'"></h2>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-slate-500" x-text="`${progress()}% complete`"></span>
+        <div class="h-2 w-24 overflow-hidden rounded-full bg-slate-200">
+          <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500" :style="`width: ${progress()}%`"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-8">
+      <aside class="w-72 shrink-0" x-show="sidebarOpen" x-cloak>
+        <div class="sidebar-scroll max-h-[70vh] overflow-y-auto rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+          <template x-for="(mod, mi) in modules" :key="mod.id">
+            <div class="mb-2">
+              <div class="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-700" :class="{ 'module-active bg-indigo-50': activeLesson && mod.lessons.includes(activeLesson) }">
+                <span class="flex h-6 w-6 items-center justify-center rounded-md bg-slate-100 text-xs font-bold text-slate-500" x-text="mi + 1"></span>
+                <span x-text="mod.title"></span>
+              </div>
+              <div class="ml-4 space-y-0.5">
+                <template x-for="(lesson, li) in mod.lessons" :key="lesson.id">
+                  <button @click="selectLesson(lesson)" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors" :class="activeLesson && activeLesson.id === lesson.id ? 'bg-indigo-100 text-indigo-700 font-medium' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'">
+                    <i x-show="lesson.completed" data-lucide="circle-check-big" class="h-4 w-4 shrink-0 text-emerald-500"></i>
+                    <i x-show="!lesson.completed" data-lucide="circle" class="h-4 w-4 shrink-0 text-slate-300"></i>
+                    <span class="flex-1 truncate" x-text="lesson.title"></span>
+                    <span class="shrink-0 text-xs text-slate-400" x-text="lesson.duration"></span>
+                  </button>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+      </aside>
+
+      <main class="min-w-0 flex-1">
+        <div x-show="activeLesson" x-cloak class="lesson-card rounded-xl border border-slate-200 bg-white p-8">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-6">
+            <div>
+              <span class="text-xs font-medium uppercase tracking-wider text-indigo-500">Current Lesson</span>
+              <h3 class="mt-1 text-2xl font-bold text-slate-800" x-text="activeLesson.title"></h3>
+              <p class="mt-1 text-sm text-slate-500" x-text="`Estimated time: ${activeLesson.duration}`"></p>
+            </div>
+            <button class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:from-indigo-500 hover:to-purple-500">
+              <i data-lucide="play" class="h-4 w-4"></i>
+              <span>Start Lesson</span>
+            </button>
+          </div>
+          <div class="prose prose-slate mt-6 max-w-none">
+            <p class="text-slate-600 leading-relaxed">This lesson covers key concepts and practical applications. Work through the material at your own pace, taking notes on important points. Each section builds on the previous one, so make sure you have a solid understanding before moving forward.</p>
+            <div class="mt-6 grid gap-4 sm:grid-cols-3">
+              <div class="rounded-lg bg-slate-50 p-4 text-center">
+                <div class="text-2xl font-bold text-indigo-600">1</div>
+                <div class="mt-1 text-xs font-medium text-slate-500">Video Sections</div>
+              </div>
+              <div class="rounded-lg bg-slate-50 p-4 text-center">
+                <div class="text-2xl font-bold text-indigo-600">3</div>
+                <div class="mt-1 text-xs font-medium text-slate-500">Practice Exercises</div>
+              </div>
+              <div class="rounded-lg bg-slate-50 p-4 text-center">
+                <div class="text-2xl font-bold text-indigo-600">1</div>
+                <div class="mt-1 text-xs font-medium text-slate-500">Quiz</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div x-show="!activeLesson" class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-white py-20">
+          <i data-lucide="book-open" class="h-12 w-12 text-slate-300"></i>
+          <p class="mt-4 text-lg font-medium text-slate-500">Select a lesson from the sidebar</p>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
   </script>
 </body>
 </html>

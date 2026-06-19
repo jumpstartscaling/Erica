@@ -68,11 +68,13 @@ async def security_headers(request: Request, call_next):
         "Content-Security-Policy",
         "default-src 'self'; "
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com "
-        "https://unpkg.com https://www.youtube.com https://s.ytimg.com; "
+        "https://unpkg.com https://www.youtube.com https://s.ytimg.com "
+        "https://static.cloudflareinsights.com https://cloudflareinsights.com "
+        "https://cdn.jsdelivr.net; "
         "style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; "
         "font-src 'self' https://fonts.gstatic.com data:; "
         "img-src 'self' data: https://picsum.photos https://*.picsum.photos "
-        "https://placehold.co https://i.ytimg.com; "
+        "https://placehold.co https://i.ytimg.com https://images.unsplash.com; "
         "frame-src https://www.youtube.com https://www.youtube-nocookie.com; "
         "connect-src 'self'",
     )

@@ -1,48 +1,127 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Disclosures, Privacy & Terms — Tranzformation Nation</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Disclosures & Privacy</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="/static/css/app.css" />
+  <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="/static/js/tracker.js"></script>
+  <script src="/static/js/nav.js"></script>
+  <style>
+    .gradient-hero {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+    }
+    .anchor-nav a {
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .anchor-nav a.active {
+      color: #6366f1;
+      border-color: #6366f1;
+    }
+    .section-card {
+      scroll-margin-top: 100px;
+    }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
-  <header class="border-b border-slate-200 bg-white">
-    <div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
-      <a href="/" class="flex items-center gap-2 font-bold text-slate-900"><span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500 text-white">TN</span> Tranzformation Nation</a>
-      <a href="/" class="text-sm text-slate-600 hover:text-emerald-600">Home</a>
+  <div id="tn-nav-root"></div>
+
+  <section class="gradient-hero relative overflow-hidden">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
+    <div class="relative mx-auto max-w-4xl px-6 py-16 text-center">
+      <span class="inline-block rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/80 backdrop-blur-sm">Legal & Policies</span>
+      <h1 class="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl">Disclosures & Privacy</h1>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-300">Our commitment to transparency, data protection, and ethical practices.</p>
     </div>
-  </header>
+  </section>
 
-  <main class="mx-auto max-w-3xl space-y-12 px-4 py-12">
-    <section id="disclosures">
-      <h1 class="text-3xl font-extrabold text-slate-900">Disclosures</h1>
-      <div class="prose mt-4 max-w-none text-slate-600">
-        <p>The content provided by Tranzformation Nation is for <strong>educational purposes only</strong> and is not legal, financial, tax, or credit-repair advice. Webinars are <strong>pre-recorded trainings</strong> presented on a scheduled basis.</p>
-        <p>You can dispute inaccurate information on your credit reports yourself for free. We do not guarantee credit score increases, deletions, approvals, funding, or business revenue. Accurate and current negative information generally cannot be legally removed from a credit report.</p>
-        <p>Operating a credit education or services business may be subject to the federal Credit Repair Organizations Act (CROA), the Telemarketing Sales Rule (TSR), FTC truth-in-advertising standards, and state credit-services organization laws. Consult a qualified attorney about your specific situation.</p>
-      </div>
-    </section>
+  <nav class="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur-lg">
+    <div class="mx-auto flex max-w-4xl items-center gap-6 overflow-x-auto px-6 py-3 text-sm anchor-nav">
+      <a href="#disclosures" class="shrink-0 border-b-2 border-transparent pb-1 font-medium text-slate-500 hover:text-indigo-600">Disclosures</a>
+      <a href="#privacy" class="shrink-0 border-b-2 border-transparent pb-1 font-medium text-slate-500 hover:text-indigo-600">Privacy Policy</a>
+      <a href="#terms" class="shrink-0 border-b-2 border-transparent pb-1 font-medium text-slate-500 hover:text-indigo-600">Terms of Service</a>
+    </div>
+  </nav>
 
-    <section id="privacy">
-      <h2 class="text-2xl font-bold text-slate-900">Privacy Policy</h2>
-      <div class="prose mt-4 max-w-none text-slate-600">
-        <p>We collect the information you provide when you create an account (name, email) and basic, anonymous usage analytics to understand how the site is used. We do not collect Social Security numbers, full credit reports, bank information, or identity documents in this product.</p>
-        <p>Analytics use an anonymous visitor identifier stored in your browser. After you log in, prior anonymous activity may be associated with your account to measure funnel performance. You may request deletion of your account data by contacting us.</p>
-        <p>Marketing emails include unsubscribe handling. Transactional messages (verification, receipts, password resets, booking confirmations) are handled separately.</p>
-      </div>
-    </section>
+  <section class="mx-auto max-w-4xl px-6 py-12 space-y-12">
 
-    <section id="terms">
-      <h2 class="text-2xl font-bold text-slate-900">Terms of Use</h2>
-      <div class="prose mt-4 max-w-none text-slate-600">
-        <p>By using this site you agree to use the educational content responsibly and lawfully. You agree not to dispute information you know to be accurate, not to use false identities or CPNs, and to follow all applicable laws.</p>
-        <p>Coaching and course offerings are educational. Where payments are enabled, refund and cancellation terms — including any cancellation rights required by law — will be provided in writing before purchase.</p>
-        <p>This is a development wireframe. Final terms are subject to attorney review before launch.</p>
+    <div id="disclosures" class="section-card rounded-2xl border border-slate-200 bg-white p-8">
+      <div class="mb-6 flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+          <i data-lucide="file-text" class="h-5 w-5"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800">Disclosures</h2>
       </div>
-    </section>
-  </main>
+      <div class="space-y-4 text-base leading-relaxed text-slate-600">
+        <p>This platform provides educational coaching and SMS-based learning tools. All services are provided on an "as is" basis. We make no guarantees regarding specific learning outcomes, as individual results vary based on effort, engagement, and other factors outside our control.</p>
+        <p>We disclose that we may use automated messaging systems (A2P 10DLC) for SMS communications. Message and data rates may apply. You may opt out of SMS communications at any time by replying STOP to any message.</p>
+        <p>Coaching sessions are for educational purposes only and do not constitute medical, legal, or financial advice. Always consult qualified professionals for matters requiring licensed expertise.</p>
+        <p>We may update these disclosures from time to time. Material changes will be communicated via email or platform notification.</p>
+      </div>
+    </div>
+
+    <div id="privacy" class="section-card rounded-2xl border border-slate-200 bg-white p-8">
+      <div class="mb-6 flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
+          <i data-lucide="shield" class="h-5 w-5"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800">Privacy Policy</h2>
+      </div>
+      <div class="space-y-4 text-base leading-relaxed text-slate-600">
+        <p>We take your privacy seriously. This policy describes how we collect, use, and protect your personal information.</p>
+        <h3 class="text-lg font-semibold text-slate-800">Information We Collect</h3>
+        <ul class="list-disc pl-6 space-y-1">
+          <li>Name, email address, and phone number provided during registration or booking</li>
+          <li>Session notes and progress data (with your consent)</li>
+          <li>Usage analytics to improve platform experience</li>
+          <li>SMS delivery receipts and message interaction data</li>
+        </ul>
+        <h3 class="text-lg font-semibold text-slate-800">How We Use Your Information</h3>
+        <ul class="list-disc pl-6 space-y-1">
+          <li>To deliver coaching sessions and educational content</li>
+          <li>To send SMS notifications and updates (with opt-out available)</li>
+          <li>To improve our services and develop new features</li>
+          <li>To comply with legal obligations</li>
+        </ul>
+        <h3 class="text-lg font-semibold text-slate-800">Data Protection</h3>
+        <p>All data is encrypted in transit using TLS 1.3 and at rest using AES-256. We retain personal data only as long as necessary to provide services. We never sell your personal information to third parties.</p>
+        <h3 class="text-lg font-semibold text-slate-800">Your Rights</h3>
+        <p>You may request access to, correction of, or deletion of your personal data at any time by contacting our privacy team. We will respond within 30 days.</p>
+        <p class="text-sm text-slate-400">Last updated: January 2026</p>
+      </div>
+    </div>
+
+    <div id="terms" class="section-card rounded-2xl border border-slate-200 bg-white p-8">
+      <div class="mb-6 flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
+          <i data-lucide="scale" class="h-5 w-5"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800">Terms of Service</h2>
+      </div>
+      <div class="space-y-4 text-base leading-relaxed text-slate-600">
+        <p>By using this platform, you agree to the following terms and conditions.</p>
+        <h3 class="text-lg font-semibold text-slate-800">Account Responsibility</h3>
+        <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.</p>
+        <h3 class="text-lg font-semibold text-slate-800">Payment & Refunds</h3>
+        <p>Payments are processed securely via our payment partners. Single sessions may be cancelled up to 24 hours before the scheduled time for a full refund. Package subscriptions may be cancelled with 30 days notice; prorated refunds apply for unused portions.</p>
+        <h3 class="text-lg font-semibold text-slate-800">Acceptable Use</h3>
+        <p>You agree not to misuse the platform for any unlawful purpose or in any way that could damage, disable, or impair our services. This includes attempting to access systems without authorization, introducing malware, or violating others' rights.</p>
+        <h3 class="text-lg font-semibold text-slate-800">Limitation of Liability</h3>
+        <p>Our liability is limited to the amount paid for services in the 12 months preceding a claim. We are not liable for indirect, incidental, or consequential damages arising from use of our platform.</p>
+        <h3 class="text-lg font-semibold text-slate-800">Governing Law</h3>
+        <p>These terms are governed by the laws of the jurisdiction in which we operate. Any disputes shall be resolved through binding arbitration.</p>
+        <p class="text-sm text-slate-400">Last updated: January 2026</p>
+      </div>
+    </div>
+
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
+  </script>
 </body>
 </html>

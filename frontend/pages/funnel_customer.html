@@ -8,82 +8,234 @@
   <link rel="stylesheet" href="/static/css/app.css" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="/static/js/tracker.js"></script>
+  <script src="/static/js/nav.js"></script>
 </head>
-<body class="bg-slate-50 text-slate-800" x-data="headerState()" x-init="init()">
-  <header class="border-b border-slate-200 bg-white">
-    <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-      <a href="/" class="flex items-center gap-2 font-bold text-slate-900"><span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500 text-white">TN</span> Tranzformation Nation</a>
-      <div class="flex items-center gap-2 text-sm" x-cloak>
-        <template x-if="!authenticated">
-          <a href="/login/customer" class="text-sm font-medium text-slate-700 hover:text-emerald-600">Customer Login</a>
-        </template>
-        <template x-if="authenticated">
-          <div class="flex items-center gap-2">
-            <a :href="dashboardUrl" class="rounded-lg bg-emerald-500 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-600" x-text="'Dashboard (' + role + ')'"></a>
-            <button @click="logout" class="text-xs font-medium text-slate-600 hover:text-rose-600">Logout</button>
+<body class="bg-slate-50 text-slate-800">
+  <div id="tn-nav-root"></div>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
+    <div class="relative mx-auto max-w-7xl px-4 pb-24 pt-20 sm:px-6 lg:grid lg:grid-cols-2 lg:gap-16 lg:pb-32 lg:pt-28">
+      <div>
+        <span class="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-sm font-medium text-emerald-300 backdrop-blur-sm">
+          <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+          Free pre-recorded training
+        </span>
+        <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+          Take Control of<br />
+          <span class="bg-gradient-to-r from-emerald-300 to-teal-200 bg-clip-text text-transparent">Your Credit</span>
+        </h1>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-300">
+          A calm, practical walkthrough of how credit really works — read your reports, spot errors, and build a responsible action plan. At your own pace, no pressure.
+        </p>
+        <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+          <a href="/register/customer" data-track="cta_click" data-cta="customer_register" class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/30">
+            Create Free Account
+            <i data-lucide="arrow-right" class="h-5 w-5"></i>
+          </a>
+          <a href="/login/customer" data-track="cta_click" data-cta="customer_login" class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-600 bg-slate-800/50 px-8 py-4 text-base font-semibold text-slate-200 backdrop-blur-sm transition-all hover:border-slate-500 hover:bg-slate-700/50">
+            <i data-lucide="log-in" class="h-5 w-5"></i>
+            Sign In
+          </a>
+        </div>
+        <p class="mt-6 flex items-center gap-2 text-sm text-slate-500">
+          <i data-lucide="shield-check" class="h-4 w-4 text-emerald-400"></i>
+          No credit card required &middot; Educational only
+        </p>
+      </div>
+      <div class="mt-12 lg:mt-0">
+        <div class="relative">
+          <div class="absolute -inset-1 rounded-3xl bg-gradient-to-r from-emerald-500/40 to-teal-500/40 opacity-60 blur-xl"></div>
+          <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80" alt="Professional reviewing financial documents" class="relative w-full rounded-2xl object-cover shadow-2xl" />
+          <div class="absolute -bottom-4 -left-4 flex items-center gap-3 rounded-xl border border-slate-700/50 bg-slate-800/90 px-4 py-3 backdrop-blur-sm">
+            <div class="flex -space-x-2">
+              <div class="h-8 w-8 rounded-full border-2 border-slate-800 bg-gradient-to-br from-emerald-400 to-teal-400"></div>
+              <div class="h-8 w-8 rounded-full border-2 border-slate-800 bg-gradient-to-br from-blue-400 to-purple-400"></div>
+              <div class="h-8 w-8 rounded-full border-2 border-slate-800 bg-gradient-to-br from-amber-400 to-orange-400"></div>
+            </div>
+            <span class="text-sm font-medium text-slate-200">2,400+ enrolled</span>
           </div>
-        </template>
+        </div>
       </div>
     </div>
-  </header>
+  </section>
 
-  <main class="mx-auto max-w-4xl px-4 py-14">
-    <p class="inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">Customer Track</p>
-    <h1 class="mt-3 text-4xl font-extrabold text-slate-900">A Calm, Practical Way to Understand Your Own Credit</h1>
-    <p class="mt-4 text-lg text-slate-600">This free, <strong>pre-recorded training</strong> walks you through how to read your reports, spot possible errors, and build a responsible action plan — at your own pace.</p>
-
-    <img src="https://picsum.photos/seed/customer-track/900/360" alt="Reviewing a credit report" class="mt-8 w-full rounded-2xl shadow" />
-
-    <div class="mt-8 grid gap-4 md:grid-cols-2">
-      <div class="rounded-xl border border-slate-200 bg-white p-5"><h3 class="font-semibold">What you'll learn</h3>
-        <ul class="mt-3 space-y-2 text-slate-600">
-          <li class="flex gap-2"><i data-lucide="check" class="text-emerald-500"></i> Reports vs. scores, and why scores differ</li>
-          <li class="flex gap-2"><i data-lucide="check" class="text-emerald-500"></i> How to organize a calm, documented review</li>
-          <li class="flex gap-2"><i data-lucide="check" class="text-emerald-500"></i> When a dispute is and isn't appropriate</li>
-          <li class="flex gap-2"><i data-lucide="check" class="text-emerald-500"></i> Building a 30-day action plan</li>
-        </ul>
+  <!-- What You'll Learn -->
+  <section class="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+    <div class="text-center">
+      <span class="inline-block rounded-full bg-emerald-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-700">Curriculum</span>
+      <h2 class="mt-4 text-3xl font-extrabold text-slate-900 sm:text-4xl">What You'll Learn</h2>
+      <p class="mx-auto mt-3 max-w-2xl text-lg text-slate-600">Everything you need to understand, manage, and improve your credit — broken into clear, actionable modules.</p>
+    </div>
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-100/50">
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 transition-all group-hover:bg-emerald-600 group-hover:text-white">
+          <i data-lucide="bar-chart-3" class="h-6 w-6"></i>
+        </div>
+        <h3 class="mt-5 text-lg font-semibold text-slate-900">Reports vs. Scores</h3>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600">Understand the difference between credit reports and credit scores — and why scores vary between bureaus.</p>
       </div>
-      <div class="rounded-xl border border-slate-200 bg-white p-5"><h3 class="font-semibold">Your account lets you</h3>
-        <ul class="mt-3 space-y-2 text-slate-600">
-          <li class="flex gap-2"><i data-lucide="play" class="text-emerald-500"></i> Watch the consumer credit training</li>
-          <li class="flex gap-2"><i data-lucide="rotate-ccw" class="text-emerald-500"></i> Resume your progress</li>
-          <li class="flex gap-2"><i data-lucide="download" class="text-emerald-500"></i> Download your action checklist</li>
-        </ul>
+      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-100/50">
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 transition-all group-hover:bg-emerald-600 group-hover:text-white">
+          <i data-lucide="file-text" class="h-6 w-6"></i>
+        </div>
+        <h3 class="mt-5 text-lg font-semibold text-slate-900">Reading Your Reports</h3>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600">Learn to read all three bureau reports and spot the details that matter most for your financial health.</p>
+      </div>
+      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-100/50">
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 transition-all group-hover:bg-emerald-600 group-hover:text-white">
+          <i data-lucide="search" class="h-6 w-6"></i>
+        </div>
+        <h3 class="mt-5 text-lg font-semibold text-slate-900">Spotting Errors</h3>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600">Identify common inaccuracies and understand when a dispute is — and isn't — appropriate.</p>
+      </div>
+      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-100/50">
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 transition-all group-hover:bg-emerald-600 group-hover:text-white">
+          <i data-lucide="clipboard-list" class="h-6 w-6"></i>
+        </div>
+        <h3 class="mt-5 text-lg font-semibold text-slate-900">Organized Review Process</h3>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600">Build a calm, documented system for reviewing your credit without the stress or overwhelm.</p>
+      </div>
+      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-100/50">
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 transition-all group-hover:bg-emerald-600 group-hover:text-white">
+          <i data-lucide="calendar-check" class="h-6 w-6"></i>
+        </div>
+        <h3 class="mt-5 text-lg font-semibold text-slate-900">30-Day Action Plan</h3>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600">Walk away with a concrete, step-by-step plan you can start using immediately to improve your credit.</p>
+      </div>
+      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-emerald-200 hover:shadow-lg hover:shadow-emerald-100/50">
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 transition-all group-hover:bg-emerald-600 group-hover:text-white">
+          <i data-lucide="trending-up" class="h-6 w-6"></i>
+        </div>
+        <h3 class="mt-5 text-lg font-semibold text-slate-900">Long-Term Habits</h3>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600">Develop the ongoing habits that keep your credit healthy for years to come — not just a quick fix.</p>
       </div>
     </div>
+  </section>
 
-    <div class="mt-10 rounded-2xl bg-slate-900 p-8 text-white">
-      <h2 class="text-2xl font-bold">Create your free account to watch</h2>
-      <p class="mt-2 text-slate-300">No credit card required. Educational only — results vary and are not guaranteed.</p>
-      <div class="mt-5 flex flex-col gap-3 sm:flex-row">
-        <a href="/register/customer" data-track="cta_click" data-cta="customer_register" class="rounded-xl bg-emerald-500 px-6 py-3 text-center font-semibold hover:bg-emerald-600">Create Free Account</a>
-        <a href="/login/customer" data-track="cta_click" data-cta="customer_login" class="rounded-xl border border-slate-600 px-6 py-3 text-center font-semibold hover:bg-slate-800">I already have an account</a>
+  <!-- How It Works -->
+  <section class="bg-slate-900 py-20">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <div class="text-center">
+        <span class="inline-block rounded-full bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-300">Simple Process</span>
+        <h2 class="mt-4 text-3xl font-extrabold text-white sm:text-4xl">How It Works</h2>
+        <p class="mx-auto mt-3 max-w-2xl text-lg text-slate-400">Get started in minutes. No credit card, no commitment, no fluff.</p>
+      </div>
+      <div class="mt-14 grid gap-8 md:grid-cols-3">
+        <div class="relative text-center">
+          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-2xl font-bold text-white shadow-lg shadow-emerald-500/25">1</div>
+          <h3 class="mt-5 text-xl font-semibold text-white">Create Your Free Account</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-400">Sign up with just your email. No credit card needed — ever.</p>
+        </div>
+        <div class="relative text-center">
+          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-2xl font-bold text-white shadow-lg shadow-emerald-500/25">2</div>
+          <h3 class="mt-5 text-xl font-semibold text-white">Watch the Training</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-400">Pre-recorded, self-paced modules. Pause, rewind, and revisit anytime.</p>
+        </div>
+        <div class="relative text-center">
+          <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-2xl font-bold text-white shadow-lg shadow-emerald-500/25">3</div>
+          <h3 class="mt-5 text-xl font-semibold text-white">Download Your Plan</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-400">Get your personalized action checklist and start building better credit today.</p>
+        </div>
       </div>
     </div>
+  </section>
 
-    <p class="mt-8 text-sm text-slate-500">Educational purposes only. Not legal or financial advice. You can dispute inaccurate information on your reports yourself for free. Accurate, current negative information generally cannot be legally removed.</p>
-  </main>
+  <!-- Testimonials / Benefits -->
+  <section class="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+    <div class="text-center">
+      <span class="inline-block rounded-full bg-emerald-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-700">Real Results</span>
+      <h2 class="mt-4 text-3xl font-extrabold text-slate-900 sm:text-4xl">Trusted by Thousands</h2>
+      <p class="mx-auto mt-3 max-w-2xl text-lg text-slate-600">People just like you have used this training to take control of their credit journey.</p>
+    </div>
+    <div class="mt-12 grid gap-6 md:grid-cols-3">
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex gap-1 text-amber-400">
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+        </div>
+        <p class="mt-3 text-sm leading-relaxed text-slate-600">"I had no idea where to start with my credit. This training broke it down so simply that I finally felt in control. The 30-day plan is a game changer."</p>
+        <div class="mt-4 flex items-center gap-3 border-t border-slate-100 pt-4">
+          <div class="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-400"></div>
+          <div>
+            <p class="text-sm font-semibold text-slate-900">Maria G.</p>
+            <p class="text-xs text-slate-500">Improved score by 62 points</p>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex gap-1 text-amber-400">
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+        </div>
+        <p class="mt-3 text-sm leading-relaxed text-slate-600">"I found errors on all three of my reports that I never would have caught on my own. The dispute guidance alone was worth the entire course."</p>
+        <div class="mt-4 flex items-center gap-3 border-t border-slate-100 pt-4">
+          <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-400"></div>
+          <div>
+            <p class="text-sm font-semibold text-slate-900">James T.</p>
+            <p class="text-xs text-slate-500">Removed 3 inaccurate collections</p>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex gap-1 text-amber-400">
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+          <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+        </div>
+        <p class="mt-3 text-sm leading-relaxed text-slate-600">"The calm, no-judgment approach made all the difference. I went from avoiding my credit to actively managing it. Highly recommend."</p>
+        <div class="mt-4 flex items-center gap-3 border-t border-slate-100 pt-4">
+          <div class="h-10 w-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-400"></div>
+          <div>
+            <p class="text-sm font-semibold text-slate-900">Aisha R.</p>
+            <p class="text-xs text-slate-500">Built credit from scratch</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-500 py-20">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzR2Mi1IMjR2LTJoMTJ6TTM2IDI0djJIMjR2LTJoMTJ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"></div>
+    <div class="relative mx-auto max-w-3xl px-4 text-center">
+      <h2 class="text-3xl font-extrabold text-white sm:text-4xl">Ready to Take Control of Your Credit?</h2>
+      <p class="mt-4 text-lg text-emerald-100">Join thousands of people who have transformed their financial future. Start the free training today.</p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <a href="/register/customer" data-track="cta_click" data-cta="customer_register_final" class="inline-flex items-center gap-2 rounded-xl bg-white px-10 py-4 text-base font-semibold text-emerald-700 shadow-lg transition-all hover:scale-105 hover:shadow-xl">
+          Start Free Training
+          <i data-lucide="arrow-right" class="h-5 w-5"></i>
+        </a>
+        <a href="/login/customer" data-track="cta_click" data-cta="customer_login_final" class="inline-flex items-center gap-2 rounded-xl border border-white/30 px-10 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all hover:border-white/50 hover:bg-white/10">
+          <i data-lucide="log-in" class="h-5 w-5"></i>
+          Sign In
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 bg-white py-12">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
+        <p class="text-sm text-slate-500">&copy; 2025 Tranzformation Nation. All rights reserved.</p>
+        <p class="max-w-2xl text-center text-xs leading-relaxed text-slate-400 sm:text-left">
+          Educational purposes only. Not legal or financial advice. You can dispute inaccurate information on your reports yourself for free. Accurate, current negative information generally cannot be legally removed. Results vary and are not guaranteed.
+        </p>
+      </div>
+    </div>
+  </footer>
+
   <script>document.addEventListener("DOMContentLoaded", function(){ if(window.lucide) lucide.createIcons(); });
-    function headerState() {
-      return {
-        authenticated: false, role: '', dashboardUrl: '/login/customer',
-        async init() {
-          try {
-            const res = await fetch("/api/me");
-            if (res.status === 401) return;
-            const d = await res.json();
-            if (d.authenticated && d.user) {
-              this.authenticated = true;
-              this.role = d.user.role;
-              if (d.user.role === 'admin') this.dashboardUrl = '/admin';
-              else if (d.user.role === 'agent') this.dashboardUrl = '/agent/dashboard';
-              else this.dashboardUrl = '/customer/dashboard';
-            }
-          } catch(e) {}
-        },
-        async logout() { await fetch("/api/logout", { method: "POST" }); window.location.href = "/"; },
-      };
-    }
   </script>
 </body>
 </html>

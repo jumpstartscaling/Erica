@@ -7,46 +7,60 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/static/css/app.css" />
   <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="/static/js/tracker.js"></script>
+  <script src="/static/js/nav.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-800" x-data="admin()" x-init="init()">
-  <header class="border-b border-slate-200 bg-white">
-    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-      <a href="/admin" class="flex items-center gap-2 font-bold text-slate-900"><span class="grid h-8 w-8 place-items-center rounded-lg bg-indigo-600 text-white">TN</span> Admin</a>
-      <div class="flex items-center gap-4 text-sm">
-        <a href="/a2p" class="text-slate-600 hover:text-indigo-600">Messaging Upgrade</a>
-        <button @click="logout" data-track="logout" class="font-medium text-slate-600 hover:text-rose-600">Logout</button>
+  <div id="tn-nav-root"></div>
+
+  <div class="bg-gradient-to-r from-indigo-600 to-purple-600">
+    <div class="mx-auto max-w-6xl px-4 py-8">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-white">Admin Overview</h1>
+          <p class="mt-1 text-sm text-indigo-100">Platform metrics at a glance.</p>
+        </div>
+        <button @click="logout" class="flex items-center gap-2 rounded-lg bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur hover:bg-white/30 transition-colors">
+          <i data-lucide="log-out" class="h-4 w-4"></i> Logout
+        </button>
       </div>
     </div>
-  </header>
+  </div>
 
   <main class="mx-auto max-w-6xl px-4 py-10">
-    <h1 class="text-2xl font-bold">Overview</h1>
 
-    <!-- Stat cards -->
-    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <template x-for="card in cards" :key="card.key">
-        <div class="rounded-2xl border border-slate-200 bg-white p-5">
-          <p class="text-sm text-slate-500" x-text="card.label"></p>
-          <p class="mt-1 text-3xl font-extrabold text-slate-900" x-text="stats[card.key] ?? '—'"></p>
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+          <div class="flex items-center gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-lg"
+                 :class="'bg-' + card.color + '-100 text-' + card.color + '-600'">
+              <i :data-lucide="card.icon" class="h-6 w-6"></i>
+            </div>
+            <div>
+              <p class="text-2xl font-bold text-slate-900" x-text="stats[card.key] ?? '—'"></p>
+              <p class="text-xs text-slate-500" x-text="card.label"></p>
+            </div>
+          </div>
         </div>
       </template>
     </div>
 
-    <!-- Funnel as Tailwind bars (NO charting library) -->
-    <section class="mt-10 rounded-2xl border border-slate-200 bg-white p-6">
-      <h2 class="font-semibold text-slate-900">Conversion Funnel</h2>
-      <p class="text-sm text-slate-500">Event counts from the <code>events</code> table (widths are % of the top step).</p>
-      <div class="mt-5 space-y-3">
+    <section class="mt-10 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="flex items-center gap-2 font-semibold text-slate-900"><i data-lucide="trending-down" class="h-5 w-5 text-indigo-500"></i>Conversion Funnel</h2>
+      <p class="mt-1 text-sm text-slate-500">Event counts from the <code class="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-mono">events</code> table (widths are % of the top step).</p>
+      <div class="mt-6 space-y-4">
         <template x-for="step in funnel" :key="step.event_name">
           <div>
-            <div class="flex justify-between text-sm">
-              <span x-text="step.label"></span>
-              <span class="font-semibold" x-text="step.count + ' (' + step.pct + '%)'"></span>
+            <div class="flex items-center justify-between text-sm">
+              <span class="font-medium text-slate-700" x-text="step.label"></span>
+              <span class="font-semibold text-slate-900" x-text="step.count + ' (' + step.pct + '%)'"></span>
             </div>
-            <div class="mt-1 h-6 w-full overflow-hidden rounded-lg bg-slate-100">
-              <div class="flex h-6 items-center rounded-lg bg-indigo-500 px-2 text-xs font-semibold text-white transition-all"
+            <div class="mt-1.5 h-7 w-full overflow-hidden rounded-lg bg-slate-100">
+              <div class="flex h-7 items-center justify-end rounded-lg px-3 text-xs font-semibold text-white transition-all"
                    :style="'width:' + Math.min(Math.max(step.pct, 2), 100) + '%'"
+                   :class="funnelColor(step)"
                    x-text="step.event_name"></div>
             </div>
           </div>
@@ -54,24 +68,44 @@
       </div>
     </section>
 
-    <!-- Recent users -->
-    <section class="mt-10 rounded-2xl border border-slate-200 bg-white p-6">
-      <h2 class="font-semibold text-slate-900">Users</h2>
+    <section class="mt-10 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div class="flex items-center justify-between">
+        <h2 class="flex items-center gap-2 font-semibold text-slate-900"><i data-lucide="users" class="h-5 w-5 text-indigo-500"></i>Users</h2>
+        <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600" x-text="users.length + ' total'"></span>
+      </div>
       <div class="mt-4 overflow-x-auto">
         <table class="w-full text-left text-sm">
-          <thead class="text-slate-500"><tr>
-            <th class="py-2 pr-4">ID</th><th class="py-2 pr-4">Email</th><th class="py-2 pr-4">Role</th>
-            <th class="py-2 pr-4">Status</th><th class="py-2 pr-4">Verified</th><th class="py-2 pr-4">Created</th>
-          </tr></thead>
+          <thead>
+            <tr class="border-b border-slate-200 text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <th class="py-3 pr-4">ID</th>
+              <th class="py-3 pr-4">Email</th>
+              <th class="py-3 pr-4">Role</th>
+              <th class="py-3 pr-4">Status</th>
+              <th class="py-3 pr-4">Verified</th>
+              <th class="py-3 pr-4">Created</th>
+            </tr>
+          </thead>
           <tbody>
-            <template x-for="u in users" :key="u.id">
-              <tr class="border-t border-slate-100">
-                <td class="py-2 pr-4" x-text="u.id"></td>
-                <td class="py-2 pr-4" x-text="u.email"></td>
-                <td class="py-2 pr-4"><span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs" x-text="u.role"></span></td>
-                <td class="py-2 pr-4" x-text="u.approval_status"></td>
-                <td class="py-2 pr-4" x-text="u.email_verified ? 'yes' : 'no'"></td>
-                <td class="py-2 pr-4 text-slate-500" x-text="(u.created_at||'').slice(0,10)"></td>
+            <template x-for="(u, i) in users" :key="u.id">
+              <tr class="border-b border-slate-100 transition-colors hover:bg-slate-50">
+                <td class="py-3 pr-4 text-slate-500" x-text="u.id"></td>
+                <td class="py-3 pr-4 font-medium text-slate-900" x-text="u.email"></td>
+                <td class="py-3 pr-4">
+                  <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
+                        :class="roleBadge(u.role)">
+                    <i :data-lucide="roleIcon(u.role)" class="h-3 w-3"></i>
+                    <span x-text="u.role"></span>
+                  </span>
+                </td>
+                <td class="py-3 pr-4">
+                  <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
+                        :class="u.approval_status === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'">
+                    <span class="flex h-1.5 w-1.5 rounded-full" :class="u.approval_status === 'approved' ? 'bg-emerald-500' : 'bg-amber-500'"></span>
+                    <span x-text="u.approval_status"></span>
+                  </span>
+                </td>
+                <td class="py-3 pr-4" x-text="u.email_verified ? 'Yes' : 'No'"></td>
+                <td class="py-3 pr-4 text-slate-500" x-text="(u.created_at || '').slice(0, 10)"></td>
               </tr>
             </template>
           </tbody>
@@ -79,42 +113,41 @@
       </div>
     </section>
 
-    <!-- Page Index -->
-    <section class="mt-10 rounded-2xl border border-slate-200 bg-white p-6">
-      <h2 class="font-semibold text-slate-900">Page Index</h2>
-      <p class="text-sm text-slate-500">Quick links to every page on the site.</p>
-      <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <section class="mt-10 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="flex items-center gap-2 font-semibold text-slate-900"><i data-lucide="map" class="h-5 w-5 text-indigo-500"></i>Page Index</h2>
+      <p class="mt-1 text-sm text-slate-500">Quick links to every page on the site.</p>
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <div>
-          <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400">Public</h3>
-          <ul class="mt-2 space-y-1 text-sm">
-            <li><a href="/" class="text-indigo-600 hover:underline">Landing</a></li>
-            <li><a href="/customer" class="text-indigo-600 hover:underline">Customer Funnel</a></li>
-            <li><a href="/agent" class="text-indigo-600 hover:underline">Agent Funnel</a></li>
-            <li><a href="/faq" class="text-indigo-600 hover:underline">FAQ</a></li>
-            <li><a href="/disclosures" class="text-indigo-600 hover:underline">Disclosures</a></li>
-            <li><a href="/a2p" class="text-indigo-600 hover:underline">A2P / Text Messaging</a></li>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Public</h3>
+          <ul class="mt-3 space-y-1.5 text-sm">
+            <li><a href="/" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Landing</a></li>
+            <li><a href="/customer" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Customer Funnel</a></li>
+            <li><a href="/agent" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Agent Funnel</a></li>
+            <li><a href="/faq" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>FAQ</a></li>
+            <li><a href="/disclosures" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Disclosures</a></li>
+            <li><a href="/a2p" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>A2P / Text Messaging</a></li>
           </ul>
         </div>
         <div>
-          <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400">Auth</h3>
-          <ul class="mt-2 space-y-1 text-sm">
-            <li><a href="/login/customer" class="text-indigo-600 hover:underline">Customer Login</a></li>
-            <li><a href="/login/agent" class="text-indigo-600 hover:underline">Agent Login</a></li>
-            <li><a href="/register/customer" class="text-indigo-600 hover:underline">Customer Register</a></li>
-            <li><a href="/register/agent" class="text-indigo-600 hover:underline">Agent Register</a></li>
-            <li><a href="/verify-email" class="text-indigo-600 hover:underline">Verify Email</a></li>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Auth</h3>
+          <ul class="mt-3 space-y-1.5 text-sm">
+            <li><a href="/login/customer" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Customer Login</a></li>
+            <li><a href="/login/agent" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Agent Login</a></li>
+            <li><a href="/register/customer" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Customer Register</a></li>
+            <li><a href="/register/agent" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Agent Register</a></li>
+            <li><a href="/verify-email" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Verify Email</a></li>
           </ul>
         </div>
         <div>
-          <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400">Logged-in</h3>
-          <ul class="mt-2 space-y-1 text-sm">
-            <li><a href="/customer/dashboard" class="text-indigo-600 hover:underline">Customer Dashboard</a></li>
-            <li><a href="/agent/dashboard" class="text-indigo-600 hover:underline">Agent Dashboard</a></li>
-            <li><a href="/admin" class="text-indigo-600 hover:underline">Admin Dashboard</a></li>
-            <li><a href="/webinar/customer" class="text-indigo-600 hover:underline">Customer Webinar</a></li>
-            <li><a href="/webinar/agent" class="text-indigo-600 hover:underline">Agent Webinar</a></li>
-            <li><a href="/coaching" class="text-indigo-600 hover:underline">Coaching</a></li>
-            <li><a href="/course" class="text-indigo-600 hover:underline">Course</a></li>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Logged-in</h3>
+          <ul class="mt-3 space-y-1.5 text-sm">
+            <li><a href="/customer/dashboard" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Customer Dashboard</a></li>
+            <li><a href="/agent/dashboard" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Agent Dashboard</a></li>
+            <li><a href="/admin" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Admin Dashboard</a></li>
+            <li><a href="/webinar/customer" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Customer Webinar</a></li>
+            <li><a href="/webinar/agent" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Agent Webinar</a></li>
+            <li><a href="/coaching" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Coaching</a></li>
+            <li><a href="/course" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition-colors"><i data-lucide="external-link" class="h-3 w-3"></i>Course</a></li>
           </ul>
         </div>
       </div>
@@ -128,15 +161,28 @@
       return {
         stats: {}, funnel: [], users: [],
         cards: [
-          { key: "users_total", label: "Total users" },
-          { key: "verified_accounts", label: "Verified accounts" },
-          { key: "agents_pending", label: "Agents pending" },
-          { key: "webinar_starts", label: "Webinar entries" },
-          { key: "events_total", label: "Tracked events" },
-          { key: "customers", label: "Customers" },
-          { key: "coaching_requests", label: "Coaching requests" },
-          { key: "purchases", label: "Active purchases" },
+          { key: "users_total", label: "Total users", icon: "users", color: "indigo" },
+          { key: "verified_accounts", label: "Verified accounts", icon: "badge-check", color: "emerald" },
+          { key: "agents_pending", label: "Agents pending", icon: "clock", color: "amber" },
+          { key: "webinar_starts", label: "Webinar entries", icon: "video", color: "blue" },
+          { key: "events_total", label: "Tracked events", icon: "activity", color: "purple" },
+          { key: "customers", label: "Customers", icon: "user-check", color: "teal" },
+          { key: "coaching_requests", label: "Coaching requests", icon: "headphones", color: "rose" },
+          { key: "purchases", label: "Active purchases", icon: "shopping-cart", color: "orange" },
         ],
+        roleBadge(role) {
+          const m = { admin: "bg-indigo-100 text-indigo-700", agent: "bg-amber-100 text-amber-700", customer: "bg-slate-100 text-slate-700" };
+          return m[role] || "bg-slate-100 text-slate-700";
+        },
+        roleIcon(role) {
+          const m = { admin: "shield", agent: "briefcase", customer: "user" };
+          return m[role] || "user";
+        },
+        funnelColor(step) {
+          const colors = ["bg-indigo-500", "bg-blue-500", "bg-teal-500", "bg-emerald-500", "bg-amber-500", "bg-orange-500"];
+          const idx = this.funnel.indexOf(step) % colors.length;
+          return colors[idx];
+        },
         async init() {
           const me = await fetch("/api/me");
           if (me.status === 401) { window.location.href = "/login/customer"; return; }
@@ -147,7 +193,10 @@
             fetch("/api/admin/funnel").then(r => r.json()),
             fetch("/api/admin/users").then(r => r.json()),
           ]);
-          this.stats = s.stats || {}; this.funnel = f.steps || []; this.users = u.users || [];
+          this.stats = s.stats || {};
+          this.funnel = f.steps || [];
+          this.users = u.users || [];
+          if (window.lucide) lucide.createIcons();
         },
         async logout() { await fetch("/api/logout", { method: "POST" }); window.location.href = "/"; },
       };
